@@ -1,0 +1,1401 @@
+======================================================================
+Day 1
+======================================================================
+Virtualization
+===================
+This is the process of running multiple OS's parallelly on
+a single pice of h/w.
+Here we have h/w(bare metal) on top of which we have host os
+and on the host os we install an application called as hypervisor
+On the hypervisor we can run any no of OS's as guest OS
+
+The disadvantage of this approach is these application running on the
+guest OS have to pass through n number of lavers to access the H/W
+resources.
+
+Containarization
+======================
+Here we have bare metal on top of whcih we install the host Os
+and on the hsot OS we install an application called as Docker Engine
+On the docker engine we can run any application in the form of containers
+Docker is a technology for creating thse containers
+
+Docker achive what is commonly called as "process isolation"
+ie all the applications(processes) have some dependency on a specific
+OS.This dependency is removed by docker and we can run them on any
+OS as containers if we have Docker engine installed
+
+These containers pass through less no of layers to access the h/w resources
+also organizations need not spend money on purchasing licenses of different
+OS's to maintian various applications
+
+Docker can be used at the the stages of S/W development life cycle
+Build---->Ship--->Run
+
+
+
+===========================================================================
+Docker comes in 2 flavours
+Docker CE (Community Edition)
+Docker EE (Enterprise Edition)
+
+Setup of Docker on Windows 
+==============================
+1 Download docker desktop from
+  https://www.docker.com/products/docker-desktop
+
+2 Install it
+
+3 Once docker is installed we can use Power shell
+  to run the docker commands
+
+
+
+========================================================================
+Images and Containers
+===========================
+A Docker image is a combination of bin/libs that are necessary
+for a s/w application to work.Initially all the s/w's of docker 
+are available in the form of docker images
+
+A running instance of an image is called as a container
+
+
+Docker Host: The server where docker is installed is called
+               docker host
+
+
+=============================================================================
+Day 2
+=============================================================================
+==========================================================================
+Docker Client:This is the CLI of docker where the user can execute the
+docker commands,The docker client accepts these commands and passes them
+to a background process called "docker deamon"
+
+Docker deamon: This process accepts the commands coming from the docker client
+and routes them to work on docker images or containers or the docker registry
+
+Docker registry: This is the cloud site of docker where docker images are
+stored.This is of two types
+1 Public Registry( hub.docker.com)
+2 Private Registry(Setup on one of our local servers)
+
+
+===========================================================================
+Important docker commands
+==============================
+Working on docker images
+===============================
+1 To pull a docker image
+  docker pull image_name
+
+2 To search for a docker images
+  docker search image_name
+
+3 To upload an image into docker hub
+  docker push image_name
+
+4 To see the list of images that are downloaded
+  docker images
+  or
+  docker image ls
+
+5 To get detailed info about a docker image
+  docker image inspect image_name/image_id
+
+6 To delete a docker image that is not linked to any container
+  docker rmi image_name/image_id
+
+7 To delete a image that is linked to a container
+  docker rmi -f image_name/image_id
+
+8 To save the docker image as a tar file
+  docker save image_name
+
+9 To untar this tar file and get  image
+  docker load tarfile_name
+
+10 To delete all image
+   docker system prune -af
+
+
+===================================================================
+11 To create a docker image from a dockerfile
+   docker build -t image_name .
+
+12 To create an image from a customised container
+   docker commit container_id/container_name image_name
+
+Working on docker containers
+==================================
+13 To see the list of running containers
+   docker container ls
+
+14 To see the list of all containers (running and stopped)
+   docker ps -a
+
+15 To start a container
+   docker start container_id/container_name
+
+16 To stop a container
+   docker stop container_id/container_name
+
+17 To restart a container
+   docker restart container_id/container_name
+   To restart after 10 seconds
+   docker restart -t 10 container_id/container_name
+
+18 To delete a stopped container
+   docker rm container_id/container_name
+
+19 To delete a running container
+   docker rm -f container_id/container_name
+
+20 To stop all running container
+   docker stop $(docker ps -aq)
+
+21 To delete all stopped containers
+   docker rm $(docker ps -aq)
+
+22 To delete all running and stopped containers
+   docker rm -f $(docker ps -aq)
+
+23 To get detailed info about a container
+   docker inspect container_id/container_name
+
+24 To see the logs genearated by a container
+   docker logs container_id/container_name
+
+25 To create a docker container
+   docker run image_name/image_id
+   run command options
+   ---------------------
+   --name:  USed to give a name to the container
+   --restart: Used to keep the container in runnign condition
+   -d: Used to run the container in detached mode in background
+   -it: Used to open interactive terminal in the container
+   -e: Used to pass environment varibales to the container
+   -v : Used to attach an external device or folder as a volume
+   --volume-from: Used to share volume between multiple containers
+   -p : Used for port mapping.It will link the container port with
+        host port.Eg: -p 8080:80 Here 8080 is host port(external port)
+        and 80 is container port(internal port)
+   -P: Used for automatic port mapping where the container port is
+       mapped with some host port that is greate than 30000
+   --link : Used to create a link between multiple containers to create a
+            microservices architecture.
+   --network: Used to start a container on a specific network
+   -rm : Used to delete a container on exit
+   -m: Used to specify the upper limit on the amount of memeory that 
+       a container can use
+   -c: Used to specify the upper limit on the amout of cpu a container can use
+   -ip: Used to asssign an ip to the container
+
+26 To see the ports used by a container
+   docker port container_id/container_name
+
+27 To run any process in a container from outside the container
+   docker exec -it container_id/container_name process_name
+   Eg: To run the bash process in a container
+   docker exec -it container_id/container_name bash
+
+28 To come out of a container without exit
+   ctrl+p,ctrl+q
+
+29  To go back into a container from where the interactive terminal is running
+    docker attach container_id/container_name
+
+30  To see the processes runnign in a container
+    docker container container_id/container_name top
+
+Working on docker networks
+===============================
+31 To see the list of docker networks
+   docker network ls
+
+32 To create a docker network
+   docker network create --driver network_type network_name
+
+33 To get detailed info about a network
+   docker network insepct network_name/network_id
+
+34 To delete a docker network
+   docker network rm network_name/network_id
+
+35 To connect a running container to a network
+   docker netowork connect network_name/network_id container_name/container_id
+
+36 To disconnect a running container to a network
+   docker netowork disconnect network_name/network_id container_name/container_id
+
+Working on docker volumes
+============================
+37 To see the list of docker  volumes
+   docker volume ls
+
+38 To create a docker volume
+   docker volume create volume_name
+
+39 To get detailed info about a volume
+   docker volume inspect volume_name/volume_id
+
+40 To delete a volume
+   docker volume rm volume_name/volume_id
+
+=====================================================================
+Day 3
+=====================================================================
+==========================================================================
+UseCase 1
+=============
+Create an nginx contaienr in detached mode and name it webserver
+Also perfrom port mapping
+
+docker run  --name webserver -p 8888:80 -d nginx
+
+To check if the nginx container is running
+docker container ls
+
+To access the nginx container from the leve of browser
+public_ip_of_dockerhost:8888
+
+============================================================================
+UseCase 2
+===============
+Start a jenkins container in detached mode and also perfrom  automatic port mapping
+docker run --name myjenkins -d -P jenkins
+
+To see the ports used by the above container
+docker port appserver
+
+To access jenkins from browser
+public_ip_of_docker_host:poert_no_from_above_command
+===================================================================================
+UseCase 3
+================
+Start tomcat as a container and perfrom c port mapping
+docker run --name appserver -d -p 9090:8080 tomee
+
+To see the ports used by the above container
+docker port appserver
+
+To access the httpd from borwser
+piblic_ip_of_dockerhost:9090
+
+=================================================================================
+UseCase 4
+==================
+Start centos as a container and launch interactive terminal in it
+docker run --name mycentos -it  centos
+
+To come out of the centos container
+exit
+
+====================================================================================
+UseCase 5
+===================
+Create a mysql container and login as root user and create some sql tables
+
+1 Create a mysql container
+  docker run --name db -d -e MYSQL_ROOT_PASSWORD=intelliqit mysql:5
+
+2 To check if the mysql container is running
+  docker container ls
+
+3 To go into the bash shell of the container
+  docker exec -it db bash
+
+4 To login into the database
+  mysql -u root -p
+  Password: intelliqit
+
+5 To see the list of databases
+  show databases;
+
+6 To move into any of the above database
+  use databasename;
+  Eg: use sys;
+
+7 To create emp and dept tables here
+  Open
+  https://justinsomnia.org/2009/04/the-emp-and-dept-tables-for-mysql/
+  Copy script from emp and dept tables creation
+  Paste in the mysql container
+
+8 To see the data of the tables
+  select * from emp;
+  select * from dept;
+
+
+====================================================================
+Day 4
+=====================================================================
+To setup a multi container architecture
+===============================================
+1 Using --link run command option (depricated)
+2 Docker compose
+3 Docker Networkings
+
+4 Python Scripting
+5 Ansible Playbooks
+
+========================================================================
+
+UseCase
+Create 2 busybooks containers c1 and c2 and link them
+
+1 Create a busybox contaienr and name it c1
+  docker run --name c1 -it busybox
+
+2 To come out of the c1 contaienr without exit
+  ctrl+p,ctrl+q
+
+3 Create another busybox container c2 and link it with c1 container
+  docker run --name c2 -it --link c1:mybusybox  busybox
+
+4 Check if c2 is pinging to c1
+  ping c1
+
+UseCase
+=============
+Setup wordpress and link it with mysql container
+
+1 Create a mysql container
+   docker run --name mydb -d -e MYSQL_ROOT_PASSWORD=intelliqit  mysql:5
+
+2 Create a wordpress container and link with the mysql container
+  docker run --name mywordpress -d -p 8888:80 --link mydb:mysql wordpress
+
+3 To check if wordpress and mysql containers are running
+  docker container ls
+
+4 To access wordpress from a browser
+  public_ip_dockerhost:8080
+
+5 To check if wordpress is linked with mysql
+  docker inspect mywordpress
+  Search for "Links" section
+
+=======================================================================
+UseCase
+===================
+Create a postgress container and link with an admienr container to 
+Note: adminer is a client application of databases.
+
+1 Create a postgres db
+  docker run  --name mydb -d -e POSTGRES_DB=intelliqit -e POSTGRES_USER=myuser
+                                                    -e POSTGRES_DB=mydb postgres
+
+2 Create an adminer application and link with the postgres db
+  docker run --name myadminer -d -p 8888:8080 --link mydb:postgres adminer
+
+3 To access postgres from browser
+  public_ip_of_dockerhost:8888
+
+=======================================================================
+
+UseCase
+=============
+Setup CI-CD environment where a Jenkins container is linked with
+2 tomcat containers for QAserver and PRodserver
+
+1 Create a jenkins container
+  docker run  --name myjenkins -d -p 5050:8080 jenkins/jenkins
+
+2 To access jenkins from browser
+  public_ip_dockerhost:5050
+
+3 Create a tomcat container as qaserver and link with jenkins container
+  docker run --name qaserver -d -p 6060:8080 --link myjenkins:jenkins tomee
+
+4 Create another tomcat container as prodserver and link with jenkins
+  docker run --name prodserver -d -p 7070:8080 --link myjenkins:jenkins tomee
+
+5 Check if all 3 containers are running
+  docker container ls
+
+
+
+
+==========================================================================
+Setup LAMP architecture 
+
+1 Create mysql container
+  docker run --name mydb -d -e MYSQL_ROOT_PASSWORD=intelliqit mysql
+
+2 Create an apache container and link with mysql container
+  docker run --name apache -d -p 9999:80 --link mydb:mysql httpd
+
+3 Create a php container and link with mysql and apache containers
+  docker run --name php -d --link mydb:mysql --link apache:httpd php:7.2-apache
+
+4 To check if php container is linked with apache and mysql
+  docker inspect php
+===============================================================================
+UseCase
+================
+Create a testing environment where a selenium hub container is linked
+with 2 node containers one with chrome and other with firefox installed
+
+1 Create a selenium hub container
+  docker run --name hub -d -p 4444:4444  selenium/hub 
+
+2 Create a container with chrome installed on it
+  docker run --name chrome -d -p 5901:5900 --link hub:selenium 
+                                            selenium/node-chrome-debug
+
+3 Create another container with firefox installed on it
+  docker run --name firefox -d -p 5902:5900 --link hub:selenium 
+                                           selenium/node-firefox-debug
+
+4 The above 2 containers are GUI ubuntu containers and we can
+  access their GUI using VNC viewer
+  a) Install VNC viewer from
+     https://www.realvnc.com/en/connect/download/viewer/
+
+  b) Open vnc viewer--->Public ip of docker host:5901 or 5902
+     Click on Continue--->Enter password: secret
+
+=========================================================================
+Day 5
+===========================================================================
+Docker compose
+=======================
+The disadvantage of "link" option is it is depricated and 
+the same individual command have to be given multiple times
+to setup similar architectures.
+To avaoid this we can use docker compose
+Docker compose uses yml files to setup the multu container 
+architecture and these files can be resused any number of time
+============================================================================
+UseCase
+============
+Create a docker compose file to setup an adminer app and postgres db
+
+vim docker-compose.yml
+---
+version: '3.8'
+services:
+  mydb:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: intelliqit
+
+  myadminer:
+    image: adminer
+    ports:
+     - 8888:80
+    links:
+      - mydb:postgres
+...
+
+To create containers from the above docker compose file
+docker compsoe up -d
+
+To stop and delete
+docker compose down
+
+===================================================================================
+UseCase
+=================
+Create a docker compsoe file to setup the CI-CD environment
+where a jenkins container is linked with 2 tomee containers
+one for qaserver and other for prodserver
+
+vim docker-compose.yml
+---
+version: '3.8'
+
+services:
+ myjenkins:
+  image: jenkins/jenkins
+  ports:
+   - 5050:8080
+
+ qaserver:
+  image: tomee
+  ports:
+   - 6060:8080
+  links:
+   - myjenkins:jenkins
+
+ prodserver:
+  image: tomee
+  ports:
+   - 7070:8080
+  links:
+   - myjenkins:jenkins
+...
+=============================================================================
+UseCase
+==============
+Create a docker compose file to setup the LAMP architecture
+vim lamp.yml
+---
+version: '3.8'
+
+services:
+ mydb:
+  image: mysql
+  environment:
+   MYSQL_ROOT_PASSWORD: intelliqit
+
+ apache:
+  image: httpd
+  ports:
+   - 8989:80
+  links:
+   - mydb:mysql
+
+ php:
+  image: php:7.2-apache
+  links:
+   - mydb:mysql
+   - apache:httpd
+...
+
+To create containers from the above file
+docker-compose -f lamp.yml up -d
+
+To delete the containers
+docker-compose -f lamp.yml down
+
+===============================================================================
+Day 6
+================================================================================
+UseCase
+============
+Create a docker compose file to setup the selenium testing
+environment where a selenium hub container is linked with
+2 node containers one with chrome and other with firefox
+
+vim docker-compose.yml
+---
+version: '3.8'
+
+services:
+ hub:
+  image: selenium/hub
+  ports:
+   - 4444:4444
+  container_name: hub
+
+ chrome:
+  image: selenium/node-chrome-debug
+  ports:
+   - 5901:5900
+  links:
+   - hub:selenium
+  container_name: chrome
+
+ firefox:
+  image: selenium/node-firefox-debug
+  ports:
+   - 5902:5900
+  links:
+   - hub:selenium
+  container_name: firefox
+...
+
+To setup the above architecture
+docker-compose up -d
+
+To check the running containers
+docker container ls
+
+To delete the containers
+docker-compose down
+
+============================================================================
+Docker Volumes
+====================
+Containers are ephemeral(temporary) but the data processed by the
+containers should be persistent.Once a container is delete all the 
+data of the container is lost
+To preserve the data even if the container is deleted we can use volumes
+
+Volumes are classified into 3 types
+======================================
+1 Simple docker volume
+2 Sharable dokcer volumes
+3 Docker volume containers
+
+Simple Docker volumes
+===========================
+These voluems are used only for preserving the data on the host
+machine even if the containers is deleted
+
+UsedCase
+============
+Create a directory /data and mount it as a volume on an ubuntu container
+Create some files in the mounted volumes and check if the files
+are preserved on the host machine even after the container is deleted
+
+1 Create /data directory
+  mkdir /data
+
+2 Create an ubuntu container and mount the above directory as volume
+  docker run --name u1 -it -v /data ubuntu
+  In the container u1 go into /data directory and create some files
+  cd /data
+  touch file1 file2 file3
+  exit
+
+3 Identify the locatiuon where the mounted data is preserved
+  docker inspect u1
+  Search for "Mounts" section and copy the "Source" path
+
+4 Delete the container
+  docker rm -f u1
+
+5 Check if the data is still present
+  cd "source_path_from_step3"
+  ls
+======================================================================
+Sharable Docker volumes
+============================
+These volumes are sharabale between multiple containers
+
+Create 3 centos containers c1,c2,c3.
+Mount /data as a volume on c1 container ,c2 should use the volume
+used by c1 and c3 should use the volume used by c2
+
+1 Create a centos container c1 and mount /data 
+  docker run --name c2 -it -v /data centos
+
+2 Go into the data folder create files in data folder
+  cd data
+  touch f1 f2
+
+3  Come out of the container without exit
+   ctlr+p,ctlr+q
+
+4 Create another centos container c2 and it should used the voluems used by c1
+  docker run --name c2 -it --volumes-from c1 centos
+  
+5 In the c2 container go into data folder and create some file
+  cd data
+  touch f3 f4
+
+6 Come out of the container without exit
+   ctlr+p,ctlr+q
+
+7 Create another centos container c3 and it should use the volume used by c2
+  docker run --name c3 -it --volumes-from c2 centos
+
+8 In the c3 container go into data folder and create some file
+  cd data
+  touch f5 f6
+
+9 Come out of the container without exit
+   ctlr+p,ctlr+q
+
+10 Go into any of the 3 contianers and we will see all the files
+   docker attach c1
+   cd /data
+  ls
+  exit
+
+12 Identify the location the where the mounted data is stored
+   docker inspect c1
+   Search for "Mounts" section and copy the "Source" path
+
+13 Delete all containers
+   docker rm -f c1 c2 c3
+
+14 Check if the files are still present
+   cd "source_path_from"step12"
+
+
+=======================================================================
+Docker volume containers
+----------------------------
+These volumes are bidirectoinal ie the changes done on host
+will be reflected into container and changes done by container
+will be reflected to host machine
+
+1 Create a volume 
+  docker volume create myvolume
+
+2 To check the location where the mounted the volume works
+  docker volume inspect myvolume
+
+3 Copy the path shown in "MountPoint" and cd to that Path
+  cd "MountPoint"
+
+4 Create few files here
+  touch file1 file2
+
+5 Create a centos container and mount the above volume into the tmp folder
+  docker run --name c1 -it -v myvolume:/tmp centos
+
+6 Change to tmp folder and check for the files
+  cd /tmp
+  ls
+  If we create any files here they will be reflected to host machine
+  And these files will be present on the host even after deleting the 
+  container.
+
+===========================================================================
+UseCase
+============
+Create a volume "newvolume" and create tomcat-users.xml file in it
+Create a tomcat container and mount the above volume into it
+Copy the tomcat-users.xml files to the required location
+
+1 Create a volume
+  docker volume create newvolume
+
+2 Identify the mount location
+  docker volume inspect newvolume
+  Copy the "MountPoint" path
+
+3 Move to this path
+  cd "MountPoint path"
+
+4 Create a file called tomcat-users.xml
+  cat > tomcat-users.xml
+  <tomcat-users>
+      <user username="intelliqit" password="intelliqit" roles="manager-script"/>
+  </tomcat-users>
+
+5 Create a tomcat container and mount the above volume
+  docker run --name webserver -d -P -v newvolume:/tmp tomcat
+
+6 Go into bash shell of the tomcat container
+  docker exec -it webserver bash
+
+7 Move the tomcat-users.xml file into conf folder
+  mv /tmp/tomcat-users.xml conf/
+
+==================================================================
+Creating customsied docker images
+=========================================
+This can be done in 2 ways
+1 Using docker commit command
+2 Using dockerfile
+
+Using the docker commit command
+====================================
+UseCase
+============
+Create an ubuntu container and install some s/w's in it
+Save this container as an image and later create a new container
+from the newly created image.We will find all the s/w's that we 
+installed.
+
+1 Create an ubuntu container
+  docker run --name u1 -it ubuntu
+
+2 In the container update the apt repo and install s/w's
+  apt-get update
+  apt-get install -y git
+
+3 Check if git is installed or not
+  git --version
+  exit
+
+4 Save the customised container as an image
+  docker commit u1 myubuntu
+
+5 Check if the new image is created or not
+  docker images
+
+6 Delete the previousely create ubuntu container
+  docker rm -f u1
+
+7 Create an new container from the above created image 
+  docker run --name u1 -it myubuntu
+
+8 Check for git 
+  git --version
+
+
+========================================================================
+Day 7
+==================================================================
+Dockerfile
+===================
+Dockerfile uses predefined keyword to create customsied
+docker images.
+
+Important keyword in dockerfile
+===================================
+FROM : This is used to specify the base image from where a
+customised docker image has to be created
+
+MAINTAINER : This represents the name of the organization or the
+author that has created this dockerfile
+
+RUN :Used to run linux commands in the container
+     Generally it used to do s/w installtion or
+     running scripts
+
+USER : This is used to specify who should be the default user
+       to login into the container
+
+COPY : Used to copy files from host to the customised image that
+       we are creating
+
+ADD : This is similar to copy where it can copy files from host
+      to image but ADD can also downlaod files from some remote server
+
+EXPOSE : USed to specify what port should be used by the container
+
+VOLUME : Used for automatic volume mounting ie we will have a volume
+         mounted automatically when the container start
+
+WORKDIR : Used to specify the default working directory of the container
+
+
+
+ENV : This is used to specify what environment varibles should
+     be used
+
+CMD : USed to run the default process of the container from outside
+      
+ENTRYPOINT : This is also used to run the default process of the container
+             
+LABEL: Used to store data about the docker image in key value pairs
+
+SHELL : Used to specify what shell should be by default used by the image
+
+============================================================================
+UseCase
+===========
+Create a dockerfile to use nginx as abse image and specify
+the maintainer as intelliqit
+
+1 Create docker file
+vim dockerfile
+
+FROM nginx
+MAINTAINER intelliqit
+
+2 To create an image from this file
+  docker build -t mynginx .
+
+3 Check if the image is created or not
+  docker images
+
+-----------------------------------------------------------------------
+UseCase
+==============
+Create a dockerfile from ubuntu base image and install 
+git in it
+
+1 Create dockerfile
+  vim dockerfile
+  FROM ubuntu
+  MAINTAINER intelliqit
+  RUN apt-get update
+  RUN apt-get install -y git
+
+2 Create an image from the above file
+  docker build -t myubuntu .
+
+3 Check if the new image is created
+  docker images
+
+4 Create a container from the new image and it should have git installed
+  docker run  --name u1 -it myubuntu
+  git --version
+
+
+
+=========================================================
+Cache Busting
+===================
+When we create an image from a dockerfile docker stores all the 
+executed isntructions in a its cache.Next time if we edit the
+same docker file and add few new instructions and build an image
+out of it docker will not execute the previously executed statements
+Instead it will read them from the cache
+This is a time saving mechanism
+The disadvantage is if the docker file is edited with a huge time
+gap then we might end up installing s/w's that are outdated
+
+Eg: 
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y git
+
+If we build an image from the above dockerfile docker saves all 
+these instructions in the dockercache and if we add the below
+statement
+RUN apt-get install -y tree
+only this latest statement will be excuted
+
+To avoid this problem and make docker execute all the instructions 
+once more time without reading from cache we use "cache busting"
+docker build --no-cache -t myubuntu .
+
+===============================================================
+
+
+
+
+Create a shell script to install multiple s/w's and copy this
+into the docker image  and execute it a the the time os creating the image
+
+1 Create the shell script
+  vim script.sh
+  apt-get update
+  for x in tree git wget
+  do
+      apt-get install -y $x
+  done
+
+2 Give excute permissions on that file
+  chmod u+x script.sh 
+
+3 Create the dockerfile
+  vim dockerfile
+  FROM ubuntu
+  MAINTIANER intelliqit
+  COPY ./script.sh /
+  RUN ./script.sh
+
+4 Create an image from the dockerfile
+  docker build -t myubuntu .
+
+5 Create a container from the above image
+  docker run  --name u1 -it myubuntu
+
+6 Check if the script.sh is present in / and also see if tree and git are installed
+  ls  /
+  git --version
+  tree
+=================================================================
+Day 8
+================================================================
+Create a dockerfile from jenkins base image and make the default user as root
+
+1 vim dockerfile
+  FROM jenkins/jenkins
+  MAINTAINER intelliqit
+  USER root
+
+2 Create an image from the above dcokerfile
+  docker build -t myjenkins .
+
+3 Create a container from the above image
+  docker run --name j1 -d -P myjenkins
+
+4 Go into the interactive shell and check if the default user is root
+  docker exec -it j1 bash
+  whoami
+
+
+
+==========================================================================
+Create a dockerfile from ubunt base image and downlaod jenkins.war
+into it
+
+1 Create a dockerfile
+  vim dockerfile
+  FROM ubuntu
+  MAINTIANER intelliqit
+  ADD https://get.jenkins.io/war-stable/2.263.4/jenkins.war  /
+
+2 Create an image from the above dockerfile
+  docker build -t myubuntu .
+
+4 Create a container from this image
+  docker run --name u1 -it myubuntu
+ 
+5 Check if jenkins.war is present
+  ls
+
+
+
+===========================================================================
+=============================================================================
+Create a dockerfile from ubuntu base image and install
+java in it,docwnload jenkins.war and make
+"java -jar jenkins.war" as the default process of the
+container
+
+1 vim dockerfile
+  FROM ubuntu
+  MAINTAINER intelliqit
+  RUN apt-get update
+  RUN apt-get install -y openjdk-8-jdk
+  ADD https://get.jenkins.io/war-stable/2.263.4/jenkins.war /
+  ENTRYPOINT ["java","-jar","jenkins.war"]
+  
+
+2 Create an image from the above file
+  docker build -t myubuntu .
+
+3 Create a container from the above image and we will see that 
+  it behaves like a jenkins container
+  docker run  --name u1 -it myubuntu
+
+4 Check the default process that is running
+  docker container ls
+
+======================================================================
+Day 9
+======================================================================
+UseCase
+=============
+Create a dockerfile from ubuntu base image and make it behave
+like nginx
+
+1 Create a dockerfile
+  vim dockerfile
+  FROM ubuntu
+  MAINTAINER intelliqit
+  RUN apt-get update
+  RUN apt-get install -y nginx
+  ENTRYPOINT ["/usr/sbin/nginx","-g","daemon off;"]
+  EXPOSE 80
+
+2 Create an image from the above dockerfile
+  docker build -t myubuntu .
+
+3 Create a container from the above image and it will work like nginx
+  docker run --name n1 -d -P myubuntu
+
+4 Check the ports used by nginx
+  docker container ls
+
+5 To access nignx from browser
+  public_ip_of_dockerhost:port_no_captured_from_step4
+
+
+
+
+========================================================================
+
+=======================================================================
+CMD and ENTRYPOIT
+------------------------
+Bothe of them are used to specify the default process that should be
+triggered when the container starts but the CMD instruction can be 
+overridden with some other process passed at the docker run command
+
+Eg:
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y nginx
+CMD ["/usr/sbin/nginx","-g","daemon off;"]
+EXPOSE 80
+
+Though the default process is to trigger nginx we can bypass that
+and make it work on some other process
+
+docker build -t myubuntu .
+Create a container
+docker run --name u1 -it -d myubuntu
+Here if we inspect the default process we will see that 
+nginx as the default process
+docker container ls
+
+on the otherhand we can modify that default process to something else
+docker run --name u1 -d -P myubuntu ls -la
+Now if we do "docker container ls"  we will see the dafault process
+to be "ls -la"
+
+==========================================================================
+Working on docker registry
+==============================
+This is the location where the docker images are saved
+This is of 2 types
+1 Public registry
+2 Private regsitry
+
+UseCase
+Create a customised centos image and upload into the public registry
+
+1 Signup into hub.docker.com
+
+2 Create a customsied centos image
+  a) Create a centos container and install git init
+     docker run --name c1 -it centos
+    yum -y update
+    yum -y install git
+    exit
+
+  b) Save this container as an image
+     docker commit c1 intelliqit/mycentos
+
+3 Login into dockerhub
+  docker login
+  Enter username and password of dockerhub
+
+4  Push the customised image
+   docker push intelliqit/mycentos
+
+=================================================================================
+Setting up a private registry
+================================================
+1 Login into dockerhub
+
+2 Click on Create repository
+
+3 give some repository name
+
+4 Upload images into this repository
+
+==================================================================================
+Day 10
+==================================================================================
+Note: To create network with a specific subnet range
+docker network create --driver bridge --subnet=192.168.2.0/24 intelliqit
+
+Docker compose by deafult creates its own customised bridge network and creates
+containers on the netowork
+
+vim docker-compose.yml
+
+---
+version: '3.8'
+
+services:
+  mydb:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: intelliqit
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+
+To setup the containers
+docker compose up -d
+
+To see the list of containers
+docker container ls
+
+To see the list of networks
+docker network ls
+
+To above 2 containers will be running on a new bridge network that is created by docker
+compose
+
+To delete the containers
+docker compose down
+This will not only delete the containers it will also delete the networks
+that got created.
+=====================================================================================
+Day 12
+=====================================================================================
+
+UseCase
+=============
+Create a custom bridge network and create a docker compose file
+to start postgres and adminer container on the above created
+network
+
+1 Create a custom bridge network
+  docker network create --driver bridge --subnet 10.0.0.0/24 intelliqit
+
+2 Create a docker compose file
+  vim docker-compose.yml
+---
+version: '3.8'
+
+services:
+ db:
+  image: postgres
+  environment:
+   POSTGRES_PASSWORD: intelliqit
+   POSTGRES_USER: myuser
+   POSTGRES_DB: mydb
+
+ adminer:
+  image: adminer
+  ports:
+   - 8888:8080
+
+networks:
+ default:
+  external:
+   name: intelliqit
+...
+
+3 To create the containers
+  docker-compose up -d
+
+4 To see if adminer and postgres contianers are created
+  docker container ls
+
+5 To check if they are running on intelliqit network
+  docker inspect container_id_from_Step4
+
+========================================================================
+Create a dockerfile and use it directly in docker-compsoe
+
+vim dockerfile
+FROM jenkins/jenkins
+MAINTAINER intelliqit
+RUN apt-get update
+RUN apt-get install -y git
+
+vim docker-compose.yml
+version: '3.8'
+
+services:
+ jenkins:
+  build: .
+  ports:
+   - 7070:8080
+  
+
+ mytomcat:
+  image: tomee
+  ports:
+   - 6060:8080
+  
+...
+
+
+
+To start the services
+docker-compose up
+
+
+=============================================================================
+Docker compose file to create 2 networks and run  containers  on different network
+vim docker-compose.yml
+---
+version: '3.8'
+
+services:
+ mydb:
+  image: jenkins/jenkins
+  ports:
+   - 5050:8080
+  networks:
+   - abc
+
+ qaserver:
+  image: tomee
+  ports:
+   - 6060:8080
+  networks:
+   - xyz
+
+ prodserver:
+  image: tomee
+  ports:
+   - 7070:8080
+  networks:
+   - xyz
+
+networks:
+ abc: {}
+ xyz: {}
+...
+==============================================================================
+==========================================================================
+Docker compose file to create  2 containers and also create 2 volumes for both the containers
+---
+version: '3.8'
+
+services:
+ db:
+  image: mysql:5
+  environment:
+   MYSQL_ROOT_PASSWORD: intelliqit
+ volumes:
+   mydb:/var/lib/mysql
+
+ wordpress:
+  image: wordpress
+  ports:
+   - 9999:80
+  volumes:
+   wordpress:/var/www/html
+
+
+volumes:
+  mydb:
+  wordpress
+
+To start the service
+docker-compose up -d
+
+To see the list of volumes
+docker volume ls
+
+
+==================================================================================
+Day 11
+==================================================================================
+
+
+============================================================================
+Docker Networking
+==========================
+Docker supports 4 types of networks
+1 Bridge
+2 Host
+3 Null
+4 Overlay
+========================================================================== 
+UseCase
+===============
+Create 2 bridge networks intelliq1 and intelliq2
+Create 2 busybox containers c1,c2 and c3
+c1 and c2 should run on intelliq1 network and shoul ping each other
+c3 should run on intelliq2 network and it should not be able to ping c1 or c2
+Now put c2 on intelliq2 network,since c2 is on both intelliq1 and intelliq2
+networks it should be able to ping to both c1 and c3
+but c1 and c3 should not ping each other directly
+
+1 Create 2 bridge networks
+  docker network create --driver bridge intelliq1
+  docker network create --driver bridge intelliq2
+
+2 Check the list of available networks
+  docker network ls
+
+3 Create a busybox container c1 on intelliqi1 network
+  docker run --name c1 -it --network intelliq1 busybox
+  Come out of the c1 container without exit ctrl+p,ctrl+q
+
+4 Identify the ipaddress of c1
+  docker inspect c1
+
+5 Create another busybox container c2 on intelliq1 network
+  docker run --name c2 -it --network intelliq1 busybox
+  ping ipaddress_of_c1    (It will ping)
+  Come out of the c2 container without exit ctrl+p,ctrl+q
+
+6 Identify the ipaddress of c2
+  docker inspect c2
+
+7 Create another busybox container c3 on intelliq2 network
+  docker run --name c3 -it --network intelliq2 busybox
+  ping ipaddress_of_c1  (It should not ping)
+  ping ipaddress_of_c2  (It should not ping)
+  Come out of the c3 container without exit ctrl+p,ctrl+q
+
+8 Identify the ipaddress of c3
+  docker inspect c3 
+
+9 Now attach intelliq2 network to c2 container
+  docker network connect intelliq2 c2
+
+10 Since c2 is now on both intelliq1 and intelliq2 networks it should ping
+   to both c1 and c3 containers
+   docker attach c2
+   ping ipaddress_of_c1  (It should  ping)
+   ping ipaddress_of_c3  (It should  ping)
+   Come out of the c2 container without exit ctrl+p,ctrl+q
+
+11 But c1 and c3 should not ping each other
+   docker attach c3
+   ping ipaddress_of_c1  (It should not ping)
+
+
+=============================================================================
+
+========================================================================
